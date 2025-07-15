@@ -15,7 +15,7 @@
 
 A collection of classic game projects developed with **Vite | React | Tailwind CSS and TypeScript**.
 
-🚀 **[Live Demo on Vercel](https://game-cave-kevinThulnith.vercel.app)** | 📱 **Mobile Friendly** | ⚡ **Lightning Fast**
+🚀 **[Live Demo on Vercel](https://game-cave-mu.vercel.app/)** | 📱 **Mobile Friendly** | ⚡ **Lightning Fast**
 
 ---
 
