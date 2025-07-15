@@ -1,3 +1,4 @@
+import { PiGameControllerFill } from "react-icons/pi";
 import GameGallery from "./components/GameGallery";
 import { FaAnglesLeft } from "react-icons/fa6";
 import type { Game } from "./types";
@@ -20,8 +21,9 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col items-center p-4 sm:p-6 md:p-8 bg-slate-950 Container z-0 w-full">
       <header className="w-full max-w-6xl mb-8 text-center z-20">
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-wider text-orange-500">
+        <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-wider text-orange-500 flex justify-center gap-4">
           Game Cave
+          <PiGameControllerFill />
         </h1>
         <p className="text-slate-300 mt-4 text-lg font-semibold">
           12 game projects from beginner to advanced.

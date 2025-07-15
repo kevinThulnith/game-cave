@@ -4,6 +4,11 @@
 
 body {
   font-family: "Poppins", system-ui;
+  scroll-behavior: smooth;
+}
+
+body::-webkit-scrollbar {
+  width: 0;
 }
 
 .Container::after {

@@ -1,21 +1,30 @@
+import React, { useState, useEffect } from "react";
 
-import React, { useState, useEffect } from 'react';
-
-const WORDS = ['react', 'javascript', 'tailwind', 'typescript', 'component', 'developer', 'arcade'];
-const ALPHABET = 'abcdefghijklmnopqrstuvwxyz'.split('');
+const WORDS = [
+  "react",
+  "javascript",
+  "tailwind",
+  "typescript",
+  "component",
+  "developer",
+  "arcade",
+];
+const ALPHABET = "abcdefghijklmnopqrstuvwxyz".split("");
 const MAX_WRONG_GUESSES = 6;
 
 const Hangman: React.FC = () => {
-  const [word, setWord] = useState('');
+  const [word, setWord] = useState("");
   const [guessedLetters, setGuessedLetters] = useState<string[]>([]);
   const [wrongGuesses, setWrongGuesses] = useState(0);
-  const [gameStatus, setGameStatus] = useState<'playing' | 'won' | 'lost'>('playing');
+  const [gameStatus, setGameStatus] = useState<"playing" | "won" | "lost">(
+    "playing"
+  );
 
   const startNewGame = () => {
     setWord(WORDS[Math.floor(Math.random() * WORDS.length)]);
     setGuessedLetters([]);
     setWrongGuesses(0);
-    setGameStatus('playing');
+    setGameStatus("playing");
   };
 
   useEffect(() => {
@@ -25,52 +34,58 @@ const Hangman: React.FC = () => {
   useEffect(() => {
     if (!word) return;
 
-    const isWon = word.split('').every(letter => guessedLetters.includes(letter));
+    const isWon = word
+      .split("")
+      .every((letter) => guessedLetters.includes(letter));
     if (isWon) {
-      setGameStatus('won');
+      setGameStatus("won");
     } else if (wrongGuesses >= MAX_WRONG_GUESSES) {
-      setGameStatus('lost');
+      setGameStatus("lost");
     }
   }, [guessedLetters, wrongGuesses, word]);
 
   const handleGuess = (letter: string) => {
-    if (gameStatus !== 'playing' || guessedLetters.includes(letter)) return;
+    if (gameStatus !== "playing" || guessedLetters.includes(letter)) return;
 
     setGuessedLetters([...guessedLetters, letter]);
     if (!word.includes(letter)) {
-      setWrongGuesses(prev => prev + 1);
+      setWrongGuesses((prev) => prev + 1);
     }
   };
 
   const hiddenWord = word
-    .split('')
-    .map(letter => (guessedLetters.includes(letter) ? letter : '_'))
-    .join(' ');
+    .split("")
+    .map((letter) => (guessedLetters.includes(letter) ? letter : "_"))
+    .join(" ");
 
   return (
     <div className="flex flex-col items-center text-center">
       <h2 className="text-3xl font-bold mb-4 text-cyan-400">Hangman</h2>
-      <p className="text-slate-400 mb-4">Wrong guesses remaining: {MAX_WRONG_GUESSES - wrongGuesses}</p>
-      
+      <p className="text-slate-400 mb-4">
+        Wrong guesses remaining: {MAX_WRONG_GUESSES - wrongGuesses}
+      </p>
+
       <div className="mb-6">
         {/* Basic hangman drawing */}
         <pre className="text-slate-400 font-mono text-lg">
           {`
   +---+
   |   |
-  ${wrongGuesses > 0 ? 'O' : ' '}   |
- ${wrongGuesses > 2 ? '/' : ' '}${wrongGuesses > 1 ? '|' : ' '}${wrongGuesses > 3 ? '\\' : ' '}  |
- ${wrongGuesses > 4 ? '/' : ' '} ${wrongGuesses > 5 ? '\\' : ' '}  |
+  ${wrongGuesses > 0 ? "O" : " "}   |
+ ${wrongGuesses > 2 ? "/" : " "}${wrongGuesses > 1 ? "|" : " "}${
+            wrongGuesses > 3 ? "\\" : " "
+          }  |
+ ${wrongGuesses > 4 ? "/" : " "} ${wrongGuesses > 5 ? "\\" : " "}  |
       |
 =========`}
         </pre>
       </div>
 
-      <p className="text-4xl tracking-widest font-mono mb-6">{hiddenWord}</p>
-      
-      {gameStatus === 'playing' && (
+      <p className="text-4xl tracking-widest font-mono mb-6 text-slate-400">{hiddenWord}</p>
+
+      {gameStatus === "playing" && (
         <div className="flex flex-wrap justify-center gap-2 max-w-lg">
-          {ALPHABET.map(letter => (
+          {ALPHABET.map((letter) => (
             <button
               key={letter}
               onClick={() => handleGuess(letter)}
@@ -83,10 +98,16 @@ const Hangman: React.FC = () => {
         </div>
       )}
 
-      {gameStatus !== 'playing' && (
+      {gameStatus !== "playing" && (
         <div className="mt-4">
-          <p className={`text-2xl font-bold ${gameStatus === 'won' ? 'text-green-400' : 'text-red-400'}`}>
-            {gameStatus === 'won' ? 'You won!' : `You lost! The word was "${word}".`}
+          <p
+            className={`text-2xl font-bold ${
+              gameStatus === "won" ? "text-green-400" : "text-red-400"
+            }`}
+          >
+            {gameStatus === "won"
+              ? "You won!"
+              : `You lost! The word was "${word}".`}
           </p>
           <button
             onClick={startNewGame}

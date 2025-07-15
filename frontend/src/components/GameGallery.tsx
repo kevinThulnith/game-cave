@@ -13,7 +13,7 @@ const GameGallery: React.FC<GameGalleryProps> = ({ games, onSelectGame }) => {
         <button
           key={game.id}
           onClick={() => onSelectGame(game)}
-          className="relative bg-[#1e1e24] h-[180px] rounded-xl overflow-hidden group isolate transform transition-all duration-300 hover:scale-105 hover:bg-[#2f2f32] focus:outline-none focus:ring-4 focus:ring-cyan-500 focus:ring-opacity-50"
+          className="relative bg-[#1e1e24] h-[175px] rounded-xl overflow-hidden group isolate transform transition-all duration-300 hover:scale-105 hover:bg-[#2f2f32] focus:outline-none focus:ring-4 focus:ring-cyan-500 focus:ring-opacity-50"
         >
           {/* ::before substitute */}
           <div className="absolute inset-[1px] bg-[#18181b] rounded-[0.9375rem] z-[2]"></div>
