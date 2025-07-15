@@ -5,17 +5,20 @@
 [![Tailwind](https://img.shields.io/badge/Tailwind_CSS-38B2AC?logo=tailwind-css&logoColor=white)](#)
 [![Vercel](https://img.shields.io/badge/Vercel-000000?logo=vercel&logoColor=white)](#)
 
+
+# Game Cave 🎮
+
+A collection of classic game projects developed with **Vite | React | Tailwind CSS and TypeScript**. 🚀 **[Live Demo on Vercel](https://game-cave-mu.vercel.app/)** | 📱 **Mobile Friendly** | ⚡ **Lightning Fast**
+
+<img src="face.png">
+
+<!-- <br>
+
 [![GitHub stars](https://img.shields.io/github/stars/kevinThulnith/game-cave?style=social)](https://github.com/kevinThulnith/game-cave/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/kevinThulnith/game-cave?style=social)](https://github.com/kevinThulnith/game-cave/network/members)
 [![GitHub issues](https://img.shields.io/github/issues/kevinThulnith/game-cave)](https://github.com/kevinThulnith/game-cave/issues)
 [![GitHub license](https://img.shields.io/github/license/kevinThulnith/game-cave)](https://github.com/kevinThulnith/game-cave/blob/main/LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
-
-# Game Cave 🎮
-
-A collection of classic game projects developed with **Vite | React | Tailwind CSS and TypeScript**.
-
-🚀 **[Live Demo on Vercel](https://game-cave-mu.vercel.app/)** | 📱 **Mobile Friendly** | ⚡ **Lightning Fast**
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com) -->
 
 ---
 
@@ -24,11 +27,11 @@ A collection of classic game projects developed with **Vite | React | Tailwind C
 <div align="center">
 
 | 🧱 **Classic Arcade** | 🧩 **Strategy & Logic** |   🎲 **Casual Fun**    |
-| :-------------------: | :---------------------: | :--------------------: |
+| :-------------------: | :---------------------: | :--------------------:  |
 |   🧱 Brick Breaker    |     🔴 Connect Four     |   🎯 Number Guesser    |
 |       🐍 Snake        |     🎯 Tic Tac Toe      | 🪨 Rock Paper Scissors |
 |        🏓 Pong        |     💣 Minesweeper      |    🔤 Word Scramble    |
-|                       |     🧠 Memory Match     |     ⚡ Typing Test     |
+|                       |     🧠 Memory Match     |     ⚡ Typing Test      |
 |                       |       🎪 Hangman        |                        |
 
 </div>
