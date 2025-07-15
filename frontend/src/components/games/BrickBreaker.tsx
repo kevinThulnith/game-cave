@@ -55,7 +55,7 @@ const BrickBreaker: React.FC = () => {
   const [lives, setLives] = useState(3);
 
   const gameAreaRef = useRef<HTMLDivElement>(null);
-  const animationFrameId = useRef<number>();
+  const animationFrameId = useRef<number>(0);
 
   const resetLevel = useCallback((newLives: number) => {
     setPaddleX((GAME_WIDTH - PADDLE_WIDTH) / 2);
@@ -117,8 +117,9 @@ const BrickBreaker: React.FC = () => {
           newBall.dy *= -1;
           brick.alive = false;
           newScore += 10;
+        } else {
+          bricksLeft = true;
         }
-        bricksLeft = true;
       }
     });
 
@@ -126,7 +127,7 @@ const BrickBreaker: React.FC = () => {
     setScore(newScore);
 
     // Win condition
-    if (!bricks.some((b) => b.alive)) {
+    if (!bricksLeft) {
       setGameState("won");
       return;
     }

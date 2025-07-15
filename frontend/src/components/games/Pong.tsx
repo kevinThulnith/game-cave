@@ -24,7 +24,7 @@ const Pong: React.FC = () => {
   const [score, setScore] = useState({ player: 0, ai: 0 });
 
   const gameAreaRef = useRef<HTMLDivElement>(null);
-  const animationFrameId = useRef<number>();
+  const animationFrameId = useRef<number>(0);
 
   const resetBall = useCallback((direction: number) => {
     setBall({

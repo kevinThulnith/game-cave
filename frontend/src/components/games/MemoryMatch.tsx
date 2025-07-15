@@ -1,8 +1,6 @@
+import React, { useState, useEffect } from "react";
 
-import React, { useState, useEffect } from 'react';
-
-const EMOJIS = ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼'];
-const CARD_COUNT = EMOJIS.length * 2;
+const EMOJIS = ["🐶", "🐱", "🐭", "🐹", "🐰", "🦊", "🐻", "🐼"];
 
 interface Card {
   id: number;
@@ -73,10 +71,10 @@ const MemoryMatch: React.FC = () => {
     newCards[index].isFlipped = true;
     setCards(newCards);
     setFlippedIndices([...flippedIndices, index]);
-    if(flippedIndices.length === 0) setMoves(prev => prev + 1);
+    if (flippedIndices.length === 0) setMoves((prev) => prev + 1);
   };
 
-  const isGameWon = cards.every(card => card.isMatched);
+  const isGameWon = cards.every((card) => card.isMatched);
 
   return (
     <div className="flex flex-col items-center">
@@ -84,14 +82,29 @@ const MemoryMatch: React.FC = () => {
       <p className="text-lg mb-4 text-slate-300">Moves: {moves}</p>
       {isGameWon ? (
         <div className="text-center">
-          <p className="text-2xl font-bold text-green-400 mb-4">You won in {moves} moves!</p>
-          <button onClick={initializeGame} className="bg-violet-500 hover:bg-violet-600 text-white font-bold py-2 px-6 rounded-lg">Play Again</button>
+          <p className="text-2xl font-bold text-green-400 mb-4">
+            You won in {moves} moves!
+          </p>
+          <button
+            onClick={initializeGame}
+            className="bg-violet-500 hover:bg-violet-600 text-white font-bold py-2 px-6 rounded-lg"
+          >
+            Play Again
+          </button>
         </div>
       ) : (
         <div className="grid grid-cols-4 gap-3 sm:gap-4">
           {cards.map((card, index) => (
-            <div key={card.id} className="w-20 h-20 sm:w-24 sm:h-24 perspective-1000" onClick={() => handleCardClick(index)}>
-              <div className={`relative w-full h-full transition-transform duration-700 transform-style-3d ${card.isFlipped ? 'rotate-y-180' : ''}`}>
+            <div
+              key={card.id}
+              className="w-20 h-20 sm:w-24 sm:h-24 perspective-1000"
+              onClick={() => handleCardClick(index)}
+            >
+              <div
+                className={`relative w-full h-full transition-transform duration-700 transform-style-3d ${
+                  card.isFlipped ? "rotate-y-180" : ""
+                }`}
+              >
                 <div className="absolute w-full h-full backface-hidden bg-slate-700 rounded-lg flex items-center justify-center cursor-pointer hover:bg-slate-600">
                   {/* Card Back */}
                 </div>
