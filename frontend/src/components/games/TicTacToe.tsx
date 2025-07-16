@@ -61,9 +61,9 @@ const TicTacToe: React.FC = () => {
     const value = board[index];
     const renderIcon = () => {
       if (value === "X") {
-        return <IoClose className="text-red-400 text-6xl" />;
+        return <IoClose className="text-red-400 text-9xl" />;
       } else if (value === "O") {
-        return <FaRegCircle className="text-blue-400 text-5xl" />;
+        return <FaRegCircle className="text-blue-400 text-7xl" />;
       }
       return null;
     };
