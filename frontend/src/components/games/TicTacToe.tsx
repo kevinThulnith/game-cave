@@ -5,7 +5,9 @@ import { IoClose } from "react-icons/io5";
 type Player = "X" | "O";
 type SquareValue = Player | null;
 
-const calculateWinner = (squares: SquareValue[]): Player | null => {
+const calculateWinner = (
+  squares: SquareValue[]
+): { winner: Player | null; winningSquares: number[] } => {
   const lines = [
     [0, 1, 2],
     [3, 4, 5],
@@ -19,31 +21,32 @@ const calculateWinner = (squares: SquareValue[]): Player | null => {
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
+      return { winner: squares[a], winningSquares: [a, b, c] };
     }
   }
-  return null;
+  return { winner: null, winningSquares: [] };
 };
 
 const TicTacToe: React.FC = () => {
   const [board, setBoard] = useState<SquareValue[]>(Array(9).fill(null));
+  const [winningSquares, setWinningSquares] = useState<number[]>([]);
   const [currentPlayer, setCurrentPlayer] = useState<Player>("X");
   const [winner, setWinner] = useState<Player | null>(null);
   const [isDraw, setIsDraw] = useState(false);
 
   useEffect(() => {
-    const calculatedWinner = calculateWinner(board);
+    const {
+      winner: calculatedWinner,
+      winningSquares: calculatedWinningSquares,
+    } = calculateWinner(board);
     if (calculatedWinner) {
       setWinner(calculatedWinner);
-    } else if (board.every((square) => square !== null)) {
-      setIsDraw(true);
-    }
+      setWinningSquares(calculatedWinningSquares);
+    } else if (board.every((square) => square !== null)) setIsDraw(true);
   }, [board]);
 
   const handleClick = (index: number) => {
-    if (winner || board[index]) {
-      return;
-    }
+    if (winner || board[index]) return;
     const newBoard = [...board];
     newBoard[index] = currentPlayer;
     setBoard(newBoard);
@@ -54,16 +57,31 @@ const TicTacToe: React.FC = () => {
     setBoard(Array(9).fill(null));
     setCurrentPlayer("X");
     setWinner(null);
+    setWinningSquares([]);
     setIsDraw(false);
   };
 
   const renderSquare = (index: number) => {
     const value = board[index];
+    const isWinningSquare = winningSquares.includes(index);
+
     const renderIcon = () => {
       if (value === "X") {
-        return <IoClose className="text-red-400 text-9xl" />;
+        return (
+          <IoClose
+            className={`text-9xl ${
+              isWinningSquare ? "text-red-600" : "text-red-400"
+            }`}
+          />
+        );
       } else if (value === "O") {
-        return <FaRegCircle className="text-blue-400 text-7xl" />;
+        return (
+          <FaRegCircle
+            className={`text-7xl ${
+              isWinningSquare ? "text-blue-600" : "text-blue-400"
+            }`}
+          />
+        );
       }
       return null;
     };
@@ -71,7 +89,9 @@ const TicTacToe: React.FC = () => {
     return (
       <button
         onClick={() => handleClick(index)}
-        className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 bg-slate-700 rounded-lg flex items-center justify-center transition-colors duration-200 hover:bg-slate-600"
+        className={`w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-lg flex items-center justify-center transition-colors duration-200 ${
+          isWinningSquare ? "bg-slate-600" : "bg-slate-700 hover:bg-slate-600"
+        }`}
       >
         {renderIcon()}
       </button>
@@ -79,13 +99,9 @@ const TicTacToe: React.FC = () => {
   };
 
   let status;
-  if (winner) {
-    status = `Winner: ${winner}!`;
-  } else if (isDraw) {
-    status = "It's a Draw!";
-  } else {
-    status = `Next player: ${currentPlayer}`;
-  }
+  if (winner) status = `Winner: ${winner}!`;
+  else if (isDraw) status = "It's a Draw!";
+  else status = `Next player: ${currentPlayer}`;
 
   return (
     <div className="flex flex-col items-center">

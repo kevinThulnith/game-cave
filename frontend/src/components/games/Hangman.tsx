@@ -1,21 +1,15 @@
 import React, { useState, useEffect } from "react";
+import { randomWord } from "../words";
 
-const WORDS = [
-  "react",
-  "javascript",
-  "tailwind",
-  "typescript",
-  "component",
-  "developer",
-  "arcade",
-];
+// Generate 6 random words at module load
+const WORDS = Array.from({ length: 6 }, () => randomWord());
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz".split("");
 const MAX_WRONG_GUESSES = 6;
 
 const Hangman: React.FC = () => {
   const [word, setWord] = useState("");
-  const [guessedLetters, setGuessedLetters] = useState<string[]>([]);
   const [wrongGuesses, setWrongGuesses] = useState(0);
+  const [guessedLetters, setGuessedLetters] = useState<string[]>([]);
   const [gameStatus, setGameStatus] = useState<"playing" | "won" | "lost">(
     "playing"
   );
@@ -37,11 +31,8 @@ const Hangman: React.FC = () => {
     const isWon = word
       .split("")
       .every((letter) => guessedLetters.includes(letter));
-    if (isWon) {
-      setGameStatus("won");
-    } else if (wrongGuesses >= MAX_WRONG_GUESSES) {
-      setGameStatus("lost");
-    }
+    if (isWon) setGameStatus("won");
+    else if (wrongGuesses >= MAX_WRONG_GUESSES) setGameStatus("lost");
   }, [guessedLetters, wrongGuesses, word]);
 
   const handleGuess = (letter: string) => {
@@ -81,7 +72,9 @@ const Hangman: React.FC = () => {
         </pre>
       </div>
 
-      <p className="text-4xl tracking-widest font-mono mb-6 text-slate-400">{hiddenWord}</p>
+      <p className="text-4xl tracking-widest font-mono mb-6 text-slate-400">
+        {hiddenWord}
+      </p>
 
       {gameStatus === "playing" && (
         <div className="flex flex-wrap justify-center gap-2 max-w-lg">
