@@ -1,49 +1,52 @@
+import React, { useState, useEffect, useRef } from "react";
 
-import React, { useState, useEffect, useRef } from 'react';
-
-const TEXT_TO_TYPE = "The quick brown fox jumps over the lazy dog. This sentence contains all the letters of the alphabet. A developer's journey is filled with challenges, learning, and immense satisfaction. Writing clean, efficient, and maintainable code is a skill that is honed over time with practice and dedication. Keep typing, keep learning, and keep building amazing things.";
+const TEXT_TO_TYPE =
+  "The quick brown fox jumps over the lazy dog. This sentence contains all the letters of the alphabet. A developer's journey is filled with challenges, learning, and immense satisfaction. Writing clean, efficient, and maintainable code is a skill that is honed over time with practice and dedication. Keep typing, keep learning, and keep building amazing things.";
 
 const TypingTest: React.FC = () => {
-  const [typedText, setTypedText] = useState('');
-  const [timer, setTimer] = useState(0);
-  const [isActive, setIsActive] = useState(false);
-  const [wpm, setWpm] = useState(0);
-  const [accuracy, setAccuracy] = useState(100);
   const startTimeRef = useRef(0);
+  const [wpm, setWpm] = useState(0);
+  const [timer, setTimer] = useState(0);
+  const [accuracy, setAccuracy] = useState(100);
+  const [typedText, setTypedText] = useState("");
+  const [isActive, setIsActive] = useState(false);
   const intervalRef = useRef<number | undefined>(undefined);
 
   // Stop timer when component unmounts
   useEffect(() => {
     return () => window.clearInterval(intervalRef.current);
   }, []);
-  
-  const calculateResults = (finalText: string, timeTaken: number) => {
-      const durationInMinutes = timeTaken / 1000 / 60;
-      if (durationInMinutes > 0) {
-        const wordsTyped = finalText.trim().split(/\s+/).length;
-        const calculatedWpm = Math.round(wordsTyped / durationInMinutes);
-        setWpm(calculatedWpm);
-      } else {
-        setWpm(0);
-      }
 
-      let correctChars = 0;
-      const compareLength = Math.min(finalText.length, TEXT_TO_TYPE.length);
-      for (let i = 0; i < compareLength; i++) {
-          if (finalText[i] === TEXT_TO_TYPE[i]) {
-              correctChars++;
-          }
+  const calculateResults = (finalText: string, timeTaken: number) => {
+    const durationInMinutes = timeTaken / 1000 / 60;
+    if (durationInMinutes > 0) {
+      const wordsTyped = finalText.trim().split(/\s+/).length;
+      const calculatedWpm = Math.round(wordsTyped / durationInMinutes);
+      setWpm(calculatedWpm);
+    } else {
+      setWpm(0);
+    }
+
+    let correctChars = 0;
+    const compareLength = Math.min(finalText.length, TEXT_TO_TYPE.length);
+    for (let i = 0; i < compareLength; i++) {
+      if (finalText[i] === TEXT_TO_TYPE[i]) {
+        correctChars++;
       }
-      const newAccuracy = TEXT_TO_TYPE.length > 0 ? Math.round((correctChars / TEXT_TO_TYPE.length) * 100) : 100;
-      setAccuracy(newAccuracy);
+    }
+    const newAccuracy =
+      TEXT_TO_TYPE.length > 0
+        ? Math.round((correctChars / TEXT_TO_TYPE.length) * 100)
+        : 100;
+    setAccuracy(newAccuracy);
   };
 
   const stopTimer = () => {
-      setIsActive(false);
-      window.clearInterval(intervalRef.current);
-      const timeTaken = Date.now() - startTimeRef.current;
-      setTimer(timeTaken);
-      return timeTaken;
+    setIsActive(false);
+    window.clearInterval(intervalRef.current);
+    const timeTaken = Date.now() - startTimeRef.current;
+    setTimer(timeTaken);
+    return timeTaken;
   };
 
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -58,18 +61,17 @@ const TypingTest: React.FC = () => {
     }
 
     setTypedText(newText);
-    
+
     if (newText.length >= TEXT_TO_TYPE.length) {
-        const timeTaken = stopTimer();
-        calculateResults(newText, timeTaken);
+      const timeTaken = stopTimer();
+      calculateResults(newText, timeTaken);
     }
   };
 
   const resetTest = () => {
-    if(isActive) {
-        stopTimer();
-    }
-    setTypedText('');
+    if (isActive) stopTimer();
+
+    setTypedText("");
     setTimer(0);
     setWpm(0);
     setAccuracy(100);
@@ -78,14 +80,20 @@ const TypingTest: React.FC = () => {
   };
 
   const getHighlightedText = () => {
-    return TEXT_TO_TYPE.split('').map((char, index) => {
+    return TEXT_TO_TYPE.split("").map((char, index) => {
       let color;
       if (index < typedText.length) {
-        color = char === typedText[index] ? 'text-green-400' : 'text-red-500 bg-red-900 bg-opacity-50';
-      } else {
-        color = 'text-slate-400';
-      }
-      return <span key={index} className={color}>{char}</span>;
+        color =
+          char === typedText[index]
+            ? "text-green-400"
+            : "text-red-500 bg-red-900 bg-opacity-50";
+      } else color = "text-slate-400";
+
+      return (
+        <span key={index} className={color}>
+          {char}
+        </span>
+      );
     });
   };
 
@@ -97,7 +105,9 @@ const TypingTest: React.FC = () => {
       <div className="flex justify-around w-full max-w-lg mb-4">
         <div className="text-center">
           <p className="text-slate-400">Time</p>
-          <p className="text-2xl font-bold text-white">{(timer / 1000).toFixed(1)}s</p>
+          <p className="text-2xl font-bold text-white">
+            {(timer / 1000).toFixed(1)}s
+          </p>
         </div>
         <div className="text-center">
           <p className="text-slate-400">WPM</p>
