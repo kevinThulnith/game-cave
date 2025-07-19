@@ -37,25 +37,25 @@ const Snake: React.FC = () => {
     setScore(0);
   }, [createFood]);
 
-  const handleKeyDown = useCallback(
-    (e: KeyboardEvent) => {
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    setDirection((prevDirection) => {
       switch (e.key) {
         case "ArrowUp":
-          if (direction !== "DOWN") setDirection("UP");
+          if (prevDirection !== "DOWN") return "UP";
           break;
         case "ArrowDown":
-          if (direction !== "UP") setDirection("DOWN");
+          if (prevDirection !== "UP") return "DOWN";
           break;
         case "ArrowLeft":
-          if (direction !== "RIGHT") setDirection("LEFT");
+          if (prevDirection !== "RIGHT") return "LEFT";
           break;
         case "ArrowRight":
-          if (direction !== "LEFT") setDirection("RIGHT");
+          if (prevDirection !== "LEFT") return "RIGHT";
           break;
       }
-    },
-    [direction]
-  );
+      return prevDirection;
+    });
+  }, []);
 
   useEffect(() => {
     window.addEventListener("keydown", handleKeyDown);
