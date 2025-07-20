@@ -5,7 +5,6 @@
 [![Tailwind](https://img.shields.io/badge/Tailwind_CSS-38B2AC?logo=tailwind-css&logoColor=white)](#)
 [![Vercel](https://img.shields.io/badge/Vercel-000000?logo=vercel&logoColor=white)](#)
 
-
 # Game Cave 🎮
 
 A collection of classic game projects developed with **Vite | React | Tailwind CSS and TypeScript**. 🚀 **[Live Demo on Vercel](https://game-cave-mu.vercel.app/)** | 📱 **Mobile Friendly** | ⚡ **Lightning Fast**
@@ -27,11 +26,11 @@ A collection of classic game projects developed with **Vite | React | Tailwind C
 <div align="center">
 
 | 🧱 **Classic Arcade** | 🧩 **Strategy & Logic** |   🎲 **Casual Fun**    |
-| :-------------------: | :---------------------: | :--------------------:  |
+| :-------------------: | :---------------------: | :--------------------: |
 |   🧱 Brick Breaker    |     🔴 Connect Four     |   🎯 Number Guesser    |
 |       🐍 Snake        |     🎯 Tic Tac Toe      | 🪨 Rock Paper Scissors |
 |        🏓 Pong        |     💣 Minesweeper      |    🔤 Word Scramble    |
-|                       |     🧠 Memory Match     |     ⚡ Typing Test      |
+|                       |     🧠 Memory Match     |     ⚡ Typing Test     |
 |                       |       🎪 Hangman        |                        |
 
 </div>
@@ -89,6 +88,24 @@ A collection of classic game projects developed with **Vite | React | Tailwind C
    ```bash
    npm install
    ```
+
+4. **Set up environment variables (optional):**
+
+   Create a `.env` file in the frontend directory:
+
+   ```bash
+   # In the frontend directory
+   touch .env
+   ```
+
+   Add the following environment variables to your `.env` file:
+
+   ```env
+   # Optional: Gemini API Key for future AI features
+   GEMINI_API_KEY=your_gemini_api_key_here
+   ```
+
+   > **Note:** The GEMINI_API_KEY is currently set up for potential future AI-powered features but is not required for basic gameplay. You can obtain a free API key from [Google AI Studio](https://aistudio.google.com/app/apikey) if you plan to extend the games with AI functionality.
 
  <br>
 
@@ -165,7 +182,28 @@ For Vercel deployment, make sure your build settings are:
 
 ### Environment Variables
 
-No environment variables are required for basic deployment. The app runs entirely on the client side!
+For basic gameplay, no environment variables are required - the games run entirely on the client side! However, if you want to set up the project for future AI-powered features:
+
+1. **Create a `.env` file in the frontend directory:**
+
+   ```bash
+   cd frontend
+   touch .env  # On Windows: type nul > .env
+   ```
+
+2. **Add the following variables:**
+
+   ```env
+   # Optional: For future AI-powered game features
+   GEMINI_API_KEY=your_gemini_api_key_here
+   ```
+
+3. **Get your Gemini API Key (optional):**
+   - Visit [Google AI Studio](https://aistudio.google.com/app/apikey)
+   - Create a new API key
+   - Replace `your_gemini_api_key_here` with your actual key
+
+> **Important:** Never commit your `.env` file to version control. The `.env` file is already included in `.gitignore` for your security.
 
 ---
 
