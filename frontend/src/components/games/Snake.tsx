@@ -73,6 +73,36 @@ const Snake: React.FC = () => {
     [gameStarted, gameOver]
   );
 
+  const handleReactKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      // Prevent default arrow key behavior (scrolling)
+      if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
+        e.preventDefault();
+      }
+
+      // Start game on first key press
+      if (!gameStarted && !gameOver) {
+        setGameStarted(true);
+      }
+
+      setDirection((prevDirection) => {
+        switch (e.key) {
+          case "ArrowUp":
+            return prevDirection !== "DOWN" ? "UP" : prevDirection;
+          case "ArrowDown":
+            return prevDirection !== "UP" ? "DOWN" : prevDirection;
+          case "ArrowLeft":
+            return prevDirection !== "RIGHT" ? "LEFT" : prevDirection;
+          case "ArrowRight":
+            return prevDirection !== "LEFT" ? "RIGHT" : prevDirection;
+          default:
+            return prevDirection;
+        }
+      });
+    },
+    [gameStarted, gameOver]
+  );
+
   useEffect(() => {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
@@ -162,7 +192,7 @@ const Snake: React.FC = () => {
           height: "400px",
         }}
         tabIndex={0}
-        onKeyDown={handleKeyDown}
+        onKeyDown={handleReactKeyDown}
       >
         {!gameStarted && !gameOver && (
           <div className="absolute inset-0 flex flex-col justify-center items-center bg-black bg-opacity-70 z-10">
