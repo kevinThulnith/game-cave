@@ -12,6 +12,7 @@ import { GiSandSnake } from "react-icons/gi";
 import Snake from "./components/games/Snake";
 import { FaKeyboard } from "react-icons/fa";
 import Pong from "./components/games/Pong";
+import { MdQuiz } from "react-icons/md";
 import { FaBomb } from "react-icons/fa";
 import type { Game } from "./types";
 import React from "react";
@@ -62,22 +63,6 @@ const HangmanIcon: React.FC = () => (
       strokeLinejoin="round"
       strokeWidth={2}
       d="M4.87 2.25a2.25 2.25 0 012.25 2.25v12a2.25 2.25 0 01-2.25 2.25h0a2.25 2.25 0 01-2.25-2.25v-12a2.25 2.25 0 012.25-2.25h0zm14.26 0a2.25 2.25 0 012.25 2.25v12a2.25 2.25 0 01-2.25 2.25h0a2.25 2.25 0 01-2.25-2.25v-12a2.25 2.25 0 012.25-2.25h0zM9.75 12h4.5"
-    />
-  </svg>
-);
-const NumberGuesserIcon: React.FC = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    className="h-12 w-12"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={2}
-      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
     />
   </svg>
 );
@@ -197,7 +182,7 @@ export const GAMES: Game[] = [
     description:
       "The computer has a secret number. Guess it in the fewest tries!",
     component: NumberGuesser,
-    icon: <NumberGuesserIcon />,
+    icon: <MdQuiz className="h-12 w-12" />,
   },
   {
     id: "word-scramble",

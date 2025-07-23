@@ -8,7 +8,7 @@
 
 # Game Cave 🎮
 
-A collection of classic game projects developed with **Vite | React | Tailwind CSS and TypeScript**. 🚀 **[Live Demo on Vercel](https://game-cave-mu.vercel.app/)** | 📱 **Mobile Friendly** | ⚡ **Lightning Fast** | 🐳 **Docker Ready**
+A collection of classic game projects developed with **Vite | React | Tailwind CSS and TypeScript** with **Server-Side Rendering (SSR)**. 🚀 **[Live Demo on Vercel](https://game-cave-mu.vercel.app/)** | 📱 **Mobile Friendly** | ⚡ **Lightning Fast** | 🐳 **Docker Ready** | 🔄 **SSR Enabled**
 
 <img src="face.png">
 
@@ -52,7 +52,8 @@ A collection of classic game projects developed with **Vite | React | Tailwind C
 - ⚡ **Lightning Fast** - Built with Vite for optimal performance
 - 🎨 **Modern UI** - Clean, intuitive interface with TailwindCSS
 - 🔧 **Type Safe** - Written in TypeScript for reliability
-- 🐳 **Docker Ready** - Containerized deployment for any environment
+- � **Server-Side Rendering (SSR)** - Faster initial page loads and better SEO
+- �🐳 **Docker Ready** - Containerized deployment for any environment
 - 🌐 **Multi-Platform Deploy** - Vercel, Docker, or cloud platforms
 - 🎯 **PWA Ready** - Can be installed as a Progressive Web App
 - 🔄 **State Management** - Smooth game state handling
@@ -139,7 +140,15 @@ npm run dev
 npm run build
 ```
 
-- Creates an optimized production build\_
+- Creates an optimized production build with SSR support\_
+
+#### Server-Side Rendering (SSR) Mode
+
+```bash
+npm run serve
+```
+
+- Runs the production build with SSR for better SEO and faster initial loads\_
 
 #### Preview Build
 
@@ -444,9 +453,10 @@ docker exec -it game-cave-dev sh
 
 - **⚛️ React 19** - Modern UI library with hooks and functional components
 - **📘 TypeScript** - Type-safe JavaScript for better development experience
-- **⚡ Vite** - Lightning-fast build tool and development server
+- **⚡ Vite** - Lightning-fast build tool and development server with SSR support
 - **🎨 TailwindCSS** - Utility-first CSS framework for rapid UI development
 - **🔧 ESLint** - Code linting for maintaining code quality
+- **🔄 Express.js** - Server-side rendering and API handling
 
 ### Deployment & DevOps
 
