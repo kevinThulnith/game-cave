@@ -5,6 +5,7 @@
 [![Tailwind](https://img.shields.io/badge/Tailwind_CSS-38B2AC?logo=tailwind-css&logoColor=white)](#)
 [![Vercel](https://img.shields.io/badge/Vercel-000000?logo=vercel&logoColor=white)](#)
 [![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)](#)
+[![Nginx](https://img.shields.io/badge/Nginx-009639?logo=nginx&logoColor=white)](#)
 
 # Game Cave 🎮
 
@@ -52,9 +53,9 @@ A collection of classic game projects developed with **Vite | React | Tailwind C
 - ⚡ **Lightning Fast** - Built with Vite for optimal performance
 - 🎨 **Modern UI** - Clean, intuitive interface with TailwindCSS
 - 🔧 **Type Safe** - Written in TypeScript for reliability
-- � **Server-Side Rendering (SSR)** - Faster initial page loads and better SEO
-- �🐳 **Docker Ready** - Containerized deployment for any environment
-- 🌐 **Multi-Platform Deploy** - Vercel, Docker, or cloud platforms
+- 🔄 **Server-Side Rendering (SSR)** - Faster initial page loads and better SEO
+- 🐳 **Docker + Nginx Architecture** - Production-ready containerized deployment with reverse proxy
+- 🌐 **Multi-Platform Deploy** - Vercel, Docker, Kubernetes, or any cloud platform
 - 🎯 **PWA Ready** - Can be installed as a Progressive Web App
 - 🔄 **State Management** - Smooth game state handling
 - 🎵 **Sound Effects** - Immersive audio feedback (coming soon)
@@ -230,9 +231,30 @@ For basic gameplay, no environment variables are required - the games run entire
 
 ---
 
-## 🐳 Docker Deployment
+## 🐳 Docker + Nginx Architecture
 
-Containerize Game Cave with Docker for consistent deployment across any environment! Perfect for development, testing, and production deployments.
+Game Cave features a sophisticated Docker setup with **Nginx reverse proxy** and **Node.js SSR server** for optimal performance and production-ready deployment. This architecture provides:
+
+- **🚀 Lightning-fast static file serving** via Nginx
+- **⚡ Server-Side Rendering (SSR)** for better SEO and initial load times
+- **📦 Multi-stage Docker builds** for minimal production images
+- **🔄 Reverse proxy setup** for seamless request handling
+- **🏥 Health checks** and monitoring capabilities
+
+### 🏗️ Architecture Overview
+
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   User Request  │ -> │  Nginx (5173)   │ -> │ Node.js (3000)  │
+│                 │    │  Reverse Proxy  │    │   SSR Server    │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+                              │
+                              ▼
+                    ┌─────────────────┐
+                    │  Static Assets  │
+                    │  (Direct Serve) │
+                    └─────────────────┘
+```
 
 ### 📋 Prerequisites
 
@@ -242,7 +264,7 @@ Ensure Docker is installed on your system:
 # Check if Docker is installed
 docker --version
 
-# Check if Docker Compose is available
+# Check if Docker Compose is available (optional)
 docker compose version
 ```
 
@@ -250,7 +272,7 @@ docker compose version
 
 ### 🚀 Quick Start with Docker
 
-#### Method 1: Direct Docker Build & Run
+#### Method 1: Production Build & Run (Recommended)
 
 1. **Navigate to the frontend directory:**
 
@@ -258,40 +280,62 @@ docker compose version
    cd frontend
    ```
 
-2. **Build the Docker image:**
+2. **Build the production Docker image:**
 
    ```bash
-   # Development build
-   docker build -t game-cave:dev .
-
-   # Production build (coming soon)
-   docker build -f Dockerfile.prod -t game-cave:prod .
+   # Multi-stage production build with Nginx + Node.js SSR
+   docker build -t game-cave:latest .
    ```
 
-3. **Verify the image was created:**
+3. **Run the production container:**
 
    ```bash
-   docker images | grep game-cave
+   # Run with Nginx reverse proxy + SSR server
+   docker run -p 5173:5173 --name game-cave-prod game-cave:latest
+
+   # Run in detached mode (background)
+   docker run -d -p 5173:5173 --name game-cave-prod game-cave:latest
    ```
 
-4. **Run the container:**
+4. **Verify the deployment:**
 
    ```bash
-   # Development mode with hot reload
-   docker run -p 5173:5173 -v "$(pwd):/app" -v /app/node_modules --name game-cave-dev game-cave:dev
+   # Check container status
+   docker ps
 
-   # Simple run (no hot reload)
-   docker run -p 5173:5173 --name game-cave-dev game-cave:dev
+   # Check application health
+   curl http://localhost:5173/health
 
-   # Run
-   docker run -p 5173:5173 game-cave:dev
+   # View container logs
+   docker logs game-cave-prod
    ```
 
 5. **Access your games:**
    - 🌐 **Local:** http://localhost:5173
    - 📱 **Network:** http://your-ip-address:5173
+   - 🏥 **Health Check:** http://localhost:5173/health
 
-#### Method 2: Docker Compose (Recommended)
+#### Method 2: Docker Compose (Advanced)
+
+Create a `docker-compose.yml` file in the frontend directory:
+
+```yaml
+# docker-compose.yml
+version: "3.8"
+services:
+  game-cave:
+    build: .
+    ports:
+      - "5173:5173"
+    container_name: game-cave-app
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:5173/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+```
 
 ```bash
 # Navigate to frontend directory
@@ -301,149 +345,299 @@ cd frontend
 docker compose up -d
 
 # View logs
-docker compose logs -f
+docker compose logs -f game-cave
 
 # Stop the application
 docker compose down
 ```
 
+### 🛠️ Docker Architecture Details
+
+#### Multi-Stage Build Process
+
+The Dockerfile uses a sophisticated **3-stage build process**:
+
+1. **Builder Stage (Node.js):**
+
+   - Installs dependencies and builds the application
+   - Creates optimized production bundles
+   - Generates SSR-ready assets
+
+2. **Node Stage (Runtime):**
+
+   - Copies only essential runtime files
+   - Minimal Node.js environment for SSR server
+   - Production-optimized package installation
+
+3. **Production Stage (Nginx + Node.js):**
+   - Nginx as reverse proxy on port 5173
+   - Node.js SSR server running on port 3000
+   - Optimized static file serving with caching
+   - Health check endpoints
+
+#### Container Architecture
+
+- **Frontend (Port 5173):** Nginx reverse proxy handles all incoming requests
+- **Backend (Port 3000):** Node.js SSR server generates dynamic content
+- **Static Assets:** Served directly by Nginx with optimal caching
+- **Health Monitoring:** Built-in health checks at `/health`
+
 ### 🛠️ Docker Commands Cheat Sheet
 
-| Command                                 | Description             |
-| --------------------------------------- | ----------------------- |
-| `docker build -t game-cave:dev .`       | Build development image |
-| `docker run -p 5173:5173 game-cave:dev` | Run container           |
-| `docker ps`                             | List running containers |
-| `docker stop game-cave-dev`             | Stop container          |
-| `docker rm game-cave-dev`               | Remove container        |
-| `docker rmi game-cave:dev`              | Remove image            |
-| `docker logs game-cave-dev`             | View container logs     |
+| Command                                    | Description              |
+| ------------------------------------------ | ------------------------ |
+| `docker build -t game-cave:latest .`       | Build production image   |
+| `docker run -p 5173:5173 game-cave:latest` | Run production container |
+| `docker ps`                                | List running containers  |
+| `docker logs game-cave-prod`               | View container logs      |
+| `docker exec -it game-cave-prod sh`        | Access container shell   |
+| `docker stop game-cave-prod`               | Stop container           |
+| `docker rm game-cave-prod`                 | Remove container         |
+| `docker rmi game-cave:latest`              | Remove image             |
+| `curl localhost:5173/health`               | Check application health |
 
 ### 🔧 Advanced Configuration
 
-#### Environment Variables
+#### Custom Port Mapping
+
+```bash
+# Run on different ports
+docker run -p 8080:5173 --name game-cave-custom game-cave:latest
+
+# Multiple instances
+docker run -p 8080:5173 --name game-cave-1 game-cave:latest
+docker run -p 8081:5173 --name game-cave-2 game-cave:latest
+```
+
+#### Environment Variables & Nginx Tuning
 
 ```bash
 # Run with custom environment variables
 docker run -p 5173:5173 \
-  -e NODE_ENV=development \
-  -e VITE_API_URL=http://localhost:3000 \
-  --name game-cave-dev \
-  game-cave:dev
+  -e NODE_ENV=production \
+  -e PORT=3000 \
+  --name game-cave-prod \
+  game-cave:latest
 ```
 
-#### Volume Mounting for Development
+#### Volume Mounting for Logs
 
 ```bash
-# Mount source code for hot reload during development
+# Mount logs for monitoring
 docker run -p 5173:5173 \
-  -v "$(pwd):/app" \
-  -v /app/node_modules \
-  --name game-cave-dev \
-  game-cave:dev
+  -v $(pwd)/logs:/var/log/nginx \
+  --name game-cave-prod \
+  game-cave:latest
 ```
 
-#### Multi-Stage Production Build
+### 🌐 Network Access & Performance
 
-```dockerfile
-# Example production Dockerfile (Dockerfile.prod)
-FROM node:22-alpine AS builder
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-RUN npm run build
-
-FROM nginx:alpine AS production
-COPY --from=builder /app/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/nginx.conf
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
-```
-
-### 🌐 Network Access & Mobile Testing
+#### Mobile Testing & Network Access
 
 ```bash
 # Run on all interfaces for network access
-docker run -p 0.0.0.0:5173:5173 --name game-cave-dev game-cave:dev
+docker run -p 0.0.0.0:5173:5173 --name game-cave-prod game-cave:latest
 
-# Find your IP address
+# Find your IP address for mobile testing
 # Windows PowerShell:
 ipconfig | findstr IPv4
 # macOS/Linux:
 ifconfig | grep inet
 ```
 
-Now you can test on mobile devices using `http://your-ip:5173`
+Now test on mobile devices using `http://your-ip:5173`
 
-### 🐛 Troubleshooting
+#### Performance Features
+
+- **⚡ Nginx Static File Serving:** Assets served directly with 1-year cache headers
+- **�️ Gzip Compression:** Enabled for all text-based files
+- **🔄 Reverse Proxy:** Efficient request routing to SSR server
+- **📱 Mobile Optimized:** Responsive design works on all devices
+- **🏥 Health Checks:** Built-in monitoring at `/health` endpoint
+
+### �🐛 Troubleshooting
 
 #### Common Issues & Solutions
 
-| Issue                 | Solution                                                        |
-| --------------------- | --------------------------------------------------------------- |
-| Port already in use   | Use different port: `-p 3000:5173`                              |
-| Permission denied     | Run with `sudo` (Linux/macOS) or check Docker Desktop (Windows) |
-| Image not found       | Rebuild image: `docker build -t game-cave:dev .`                |
-| Container won't start | Check logs: `docker logs game-cave-dev`                         |
+| Issue                     | Solution                                                       |
+| ------------------------- | -------------------------------------------------------------- |
+| Port 5173 already in use  | Use different port: `-p 8080:5173`                             |
+| Permission denied         | Check Docker Desktop (Windows) or use `sudo` (Linux/macOS)     |
+| Container fails to start  | Check logs: `docker logs game-cave-prod`                       |
+| Health check failing      | Verify: `curl http://localhost:5173/health`                    |
+| Nginx errors              | Check Nginx logs: `docker exec game-cave-prod cat /dev/stderr` |
+| SSR server not responding | Verify Node.js process: `docker exec game-cave-prod ps aux`    |
+
+#### Detailed Troubleshooting
+
+```bash
+# Check container health
+docker inspect game-cave-prod | grep -A 5 Health
+
+# Access container for debugging
+docker exec -it game-cave-prod sh
+
+# Inside container - check processes
+ps aux
+
+# Check port bindings
+netstat -tlnp
+
+# Test Nginx configuration
+nginx -t
+
+# Test Node.js server directly
+curl http://127.0.0.1:3000
+```
 
 #### Clean Slate Reset
 
 ```bash
 # Stop and remove all Game Cave containers
-docker stop $(docker ps -q --filter ancestor=game-cave:dev)
-docker rm $(docker ps -aq --filter ancestor=game-cave:dev)
+docker stop $(docker ps -q --filter ancestor=game-cave:latest)
+docker rm $(docker ps -aq --filter ancestor=game-cave:latest)
 
 # Remove all Game Cave images
 docker rmi $(docker images game-cave -q)
 
 # Clean up unused Docker resources
 docker system prune -af
+
+# Rebuild from scratch
+docker build -t game-cave:latest .
 ```
 
 ### 🚢 Production Deployment
 
-#### Docker Hub Deployment
+#### Container Registry Deployment
 
 ```bash
-# Tag your image
-docker tag game-cave:dev yourusername/game-cave:latest
+# Tag your image for deployment
+docker tag game-cave:latest yourusername/game-cave:latest
 
 # Push to Docker Hub
 docker push yourusername/game-cave:latest
 
-# Deploy anywhere
-docker run -p 80:80 yourusername/game-cave:latest
+# Deploy on any server
+docker run -d -p 80:5173 --restart unless-stopped yourusername/game-cave:latest
 ```
 
 #### Cloud Deployment Options
 
-- **🌊 DigitalOcean App Platform** - One-click Docker deployment
-- **☁️ AWS ECS/Fargate** - Scalable container orchestration
-- **🔵 Azure Container Instances** - Serverless containers
-- **🌐 Google Cloud Run** - Pay-per-use container platform
+- **🌊 DigitalOcean App Platform** - Direct Docker deployment with auto-scaling
+- **☁️ AWS ECS/Fargate** - Managed container orchestration with load balancing
+- **🔵 Azure Container Instances** - Serverless containers with quick scaling
+- **🌐 Google Cloud Run** - Pay-per-use container platform with auto-scaling
+- **🚀 Railway** - Simple container deployment with automatic HTTPS
+- **⚡ Fly.io** - Global edge deployment for containers
 
-### 📊 Container Health & Monitoring
+#### Kubernetes Deployment
 
-```bash
-# Monitor container resources
-docker stats game-cave-dev
-
-# Health check
-docker exec game-cave-dev curl -f http://localhost:5173 || exit 1
-
-# Container shell access
-docker exec -it game-cave-dev sh
+```yaml
+# k8s-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: game-cave
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: game-cave
+  template:
+    metadata:
+      labels:
+        app: game-cave
+    spec:
+      containers:
+        - name: game-cave
+          image: yourusername/game-cave:latest
+          ports:
+            - containerPort: 5173
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 5173
+            initialDelaySeconds: 30
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: game-cave-service
+spec:
+  selector:
+    app: game-cave
+  ports:
+    - port: 80
+      targetPort: 5173
+  type: LoadBalancer
 ```
 
-### 🎯 Why Docker for Game Cave?
+### 📊 Container Monitoring & Performance
 
-- ✅ **Consistent Environment** - Same setup across all machines
-- ✅ **Quick Setup** - Get running in minutes, not hours
-- ✅ **Isolated Dependencies** - No conflicts with system packages
+#### Resource Monitoring
+
+```bash
+# Monitor container resources in real-time
+docker stats game-cave-prod
+
+# Check memory usage
+docker exec game-cave-prod free -h
+
+# Check disk usage
+docker exec game-cave-prod df -h
+
+# Monitor network connections
+docker exec game-cave-prod netstat -tulpn
+```
+
+#### Performance Metrics
+
+```bash
+# Test response times
+curl -w "@curl-format.txt" -o /dev/null -s http://localhost:5173/
+
+# curl-format.txt content:
+#     time_namelookup:  %{time_namelookup}\n
+#        time_connect:  %{time_connect}\n
+#     time_appconnect:  %{time_appconnect}\n
+#    time_pretransfer:  %{time_pretransfer}\n
+#       time_redirect:  %{time_redirect}\n
+#  time_starttransfer:  %{time_starttransfer}\n
+#                     ----------\n
+#          time_total:  %{time_total}\n
+
+# Load testing with Apache Bench
+ab -n 1000 -c 10 http://localhost:5173/
+
+# Health check monitoring
+watch -n 5 'curl -s http://localhost:5173/health'
+```
+
+### 🎯 Why Docker + Nginx for Game Cave?
+
+#### Performance Benefits
+
+- ✅ **Static Asset Optimization** - Nginx serves files 10x faster than Node.js
+- ✅ **Concurrent Request Handling** - Nginx handles thousands of connections efficiently
+- ✅ **Intelligent Caching** - 1-year cache headers for assets, dynamic content for pages
+- ✅ **Gzip Compression** - Reduces bandwidth usage by up to 70%
+
+#### Deployment Benefits
+
+- ✅ **Production Ready** - Battle-tested Nginx + Node.js architecture
+- ✅ **Scalable Architecture** - Easy to scale horizontally behind load balancers
+- ✅ **Container Portability** - Same environment from dev to production
+- ✅ **Health Monitoring** - Built-in health checks for container orchestration
+- ✅ **Resource Efficiency** - Minimal container size with multi-stage builds
+
+#### Developer Experience
+
+- ✅ **One Command Deploy** - `docker run` and you're live
+- ✅ **Consistent Environment** - No "works on my machine" issues
 - ✅ **Easy Cleanup** - Remove everything with one command
-- ✅ **Production Ready** - Scale from dev to production seamlessly
-- ✅ **Team Collaboration** - Everyone runs the same environment
+- ✅ **Development Parity** - Same stack in dev and production
 
 ---
 
@@ -457,12 +651,15 @@ docker exec -it game-cave-dev sh
 - **🎨 TailwindCSS** - Utility-first CSS framework for rapid UI development
 - **🔧 ESLint** - Code linting for maintaining code quality
 - **🔄 Express.js** - Server-side rendering and API handling
+- **🌐 Nginx** - High-performance reverse proxy and static file server
 
 ### Deployment & DevOps
 
-- **🐳 Docker** - Containerization for consistent deployments
-- **🌐 Vercel** - Serverless deployment platform
-- **☁️ Multi-Cloud Ready** - AWS, Azure, Google Cloud, DigitalOcean
+- **🐳 Docker + Nginx** - Multi-stage production builds with reverse proxy architecture
+- **🌐 Vercel** - Serverless deployment platform with edge functions
+- **☁️ Multi-Cloud Ready** - AWS, Azure, Google Cloud, DigitalOcean compatible
+- **🏥 Health Monitoring** - Built-in health checks and monitoring endpoints
+- **⚖️ Load Balancer Ready** - Horizontally scalable architecture
 
 ---
 
@@ -501,8 +698,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - 🌍 **Global CDN** - Fast delivery worldwide via Vercel
 - 📱 **Mobile Optimized** - Works perfectly on all devices
 - ⚡ **< 3s Load Time** - Lightning-fast performance
-- 🐳 **Docker Ready** - Container support for all environments
-- ☁️ **Multi-Cloud** - Deploy anywhere with Docker containers
+- 🐳 **Docker + Nginx Ready** - Production-grade container architecture with reverse proxy
+- ☁️ **Multi-Cloud Deployable** - Kubernetes, Docker Swarm, or any container platform
 
 ---
 
